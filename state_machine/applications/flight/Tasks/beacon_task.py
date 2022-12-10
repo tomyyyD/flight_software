@@ -19,22 +19,23 @@ class task(Task):
         """
         currTime = time.time()
         TIMEINTERVAL = 1000
-        logsDir = "/sd/logs2/"
-        currentLogFile = f"{logsDir}log{currTime // TIMEINTERVAL}.txt"
+        logDir = os.path.join(os.getcwd(), ".sd")
 
-        if self.file_exists(currentLogFile):
-            file = open(currentLogFile, "ab+")
-        else:
+        try:
+            file = open(f".sd/logfiles/log{int(currTime//TIMEINTERVAL)}.txt", "ab+")
+        except FileNotFoundError:
             try:
-                os.mkdir(logsDir)
-                file = open(currentLogFile, "ab+")
+                os.mkdir(logDir)
+                os.mkdir(os.path.join(logDir, "logfiles"))
+                file = open(f".sd/logfiles/log{int(currTime//TIMEINTERVAL)}.txt", "ab+")
             except Exception as e:
                 print(e)
+        except Exception as e:
+            print(e)
 
         beacon_packet = self.beacon_packet()
         file.write(bytearray(beacon_packet))
         file.close()
-        file = open(currentLogFile, "rb")
         tq.push(Message(10, beacon_packet))
         self.debug("Beacon task pushing to tq")
 
@@ -67,11 +68,3 @@ class task(Task):
                            gyro[0], gyro[1], gyro[2],
                            acc[0], acc[1], acc[2],
                            mag[0], mag[1], mag[2])
-
-    def file_exists(self, filePath):
-        try:
-            os.stat(filePath)
-            return True
-        except Exception as e:
-            print(e)
-            return False

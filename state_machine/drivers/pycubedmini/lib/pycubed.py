@@ -198,9 +198,7 @@ class _Satellite:
     def imu(self):
         """ Define IMU parameters and initialize """
         try:
-            return bmx160.BMX160_I2C(
-                self.i2c(hw_config.IMU_I2C),
-                address=hw_config.IMU_ADDRESS)
+            return bmx160.BMX160_I2C(self.i2c1, address=0x69)
         except Exception as e:
             print(f'[ERROR][Initializing IMU] {e},' +
                   f'\n\tis HARDWARE_VERSION = {hw_config.HARDWARE_VERSION} correct?')
