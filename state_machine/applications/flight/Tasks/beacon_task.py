@@ -25,8 +25,11 @@ class task(Task):
         if self.file_exists(currentLogFile):
             file = open(currentLogFile, "ab+")
         else:
-            os.mkdir(logsDir)
-            file = open(currentLogFile, "ab+")
+            try:
+                os.mkdir(logsDir)
+                file = open(currentLogFile, "ab+")
+            except Exception as e:
+                print(e)
 
         beacon_packet = self.beacon_packet()
         file.write(bytearray(beacon_packet))
